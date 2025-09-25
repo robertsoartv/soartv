@@ -46,7 +46,6 @@ export default function Footer() {
                   muted
                   loop
                   className="rounded-lg"
-                  poster="/api/placeholder/200/200"
                 >
                   <source src="/attached_assets/Fusion Atom_1753381995636.MOV" type="video/mp4" />
                   Your browser does not support the video tag.
