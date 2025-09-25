@@ -8,7 +8,7 @@
     "dev": "NODE_ENV=development tsx server/index.ts",
     "start": "node server/server.js",
     "build": "vite build",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --force --legacy-peer-deps --no-audit --no-fund && npx vite build",    "check": "tsc",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --force --legacy-peer-deps --no-audit --no-fund && npx vite build --config ./vite.config.ts",
     "db:push": "drizzle-kit push"
     },
   "engines": {
