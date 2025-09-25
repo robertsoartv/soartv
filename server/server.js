@@ -4,7 +4,7 @@ const path = require('path');
 const app = express();
 app.use(express.json());
 
-const clientBuildPath = path.join(__dirname, '../client/dist');
+const clientBuildPath = path.join(__dirname, '../dist/public');
 app.use(express.static(clientBuildPath));
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
