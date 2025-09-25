@@ -1,18 +1,14 @@
-// server/server.js
 const express = require('express');
 const path = require('path');
 
 const app = express();
 app.use(express.json());
 
-// Serve the built frontend (Vite = dist/public, CRA = client/build)
-const clientBuildPath = path.join(__dirname, '../dist/public');
+const clientBuildPath = path.join(__dirname, '../client/dist');
 app.use(express.static(clientBuildPath));
 
-// Example API route
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
-// SPA fallback to index.html
 app.get('*', (_req, res) => {
   res.sendFile(path.join(clientBuildPath, 'index.html'));
 });
