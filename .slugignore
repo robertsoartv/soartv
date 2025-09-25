@@ -1,4 +1,26 @@
-node_modules
-*.log
+# docs / meta
+README.md
+LICENSE
 *.md
-replit*
+.replit
+.replit*
+*.log
+
+# local caches / editor junk
+*.swp
+*.DS_Store
+
+# test & tooling
+tests
+__tests__
+coverage
+
+# client & build caches
+client/node_modules
+client/.cache
+client/.vite
+client/.eslintcache
+
+# if you keep raw assets not needed at runtime (keep dist/)
+client/public
+client/src
