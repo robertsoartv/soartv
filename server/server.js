@@ -5,8 +5,8 @@ const path = require('path');
 const app = express();
 app.use(express.json());
 
-// Serve the built frontend (Vite = client/dist, CRA = client/build)
-const clientBuildPath = path.join(__dirname, '../client/dist'); // change to ../client/build if you use CRA
+// Serve the built frontend (Vite = dist/public, CRA = client/build)
+const clientBuildPath = path.join(__dirname, '../dist/public');
 app.use(express.static(clientBuildPath));
 
 // Example API route
