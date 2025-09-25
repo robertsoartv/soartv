@@ -1,28 +1,4 @@
-# Replit artifacts
-.replit
-replit.*
-attached_assets/
-
-# Git/IDE/meta
-.git/
-.github/
-.vscode/
+node_modules
+*.log
 *.md
-*.MD
-*.map
-
-# Client build-time stuff we don't need at runtime
-client/node_modules/
-client/src/
-client/.vite/
-client/.cache/
-client/.storybook/
-client/tests/
-client/__tests__/
-**/*.test.*
-**/*.spec.*
-
-# Logs and caches
-npm-debug.log*
-yarn-error.log*
-pnpm-debug.log*
+replit*
