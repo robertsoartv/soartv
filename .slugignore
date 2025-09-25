@@ -23,4 +23,4 @@ client/.eslintcache
 
 # if you keep raw assets not needed at runtime (keep dist/)
 client/public
-client/src
+# client/src - REMOVED: needed for Vite build process
