@@ -10,12 +10,12 @@
     "build": "vite build --config ./vite.config.ts",
     "heroku-postbuild": "npm install --legacy-peer-deps --no-audit --no-fund && npm run build && npm prune --production",
     "db:push": "drizzle-kit push"
-  },
+    },
   "engines": {
     "node": "20.x",
     "npm": "9.x"
   },
-  "dependencies": {
+"dependencies":{
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@google-cloud/storage": "^7.17.1",
