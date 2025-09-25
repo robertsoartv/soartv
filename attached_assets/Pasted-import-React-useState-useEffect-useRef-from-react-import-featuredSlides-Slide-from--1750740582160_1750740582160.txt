@@ -1,0 +1,136 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { featuredSlides, Slide } from './featuredSlides';
+import {
+  FaPlay,
+  FaPlus,
+  FaInfoCircle,
+  FaChevronLeft,
+  FaChevronRight,
+} from 'react-icons/fa';
+import './HeroCarousel.css';
+
+export default function HeroCarousel() {
+  const [current, setCurrent] = useState(0);
+  const [showTrailer, setShowTrailer] = useState(false);
+  const trailerTimer = useRef<number>();
+  const slideContainer = useRef<HTMLDivElement>(null);
+
+  const nextSlide = () =>
+    setCurrent((idx) => (idx + 1) % featuredSlides.length);
+  const prevSlide = () =>
+    setCurrent((idx) =>
+      idx === 0 ? featuredSlides.length - 1 : idx - 1
+    );
+
+  // whenever current changes, reset trailer state & schedule poster→trailer switch
+  useEffect(() => {
+    setShowTrailer(false);
+
+    // clear any pending timers
+    clearTimeout(trailerTimer.current);
+
+    // wait 3s on poster, then show trailer
+    trailerTimer.current = window.setTimeout(() => {
+      setShowTrailer(true);
+    }, 3000);
+
+    // cleanup
+    return () => clearTimeout(trailerTimer.current);
+  }, [current]);
+
+  const slide = featuredSlides[current];
+
+  return (
+    <header className="hero" ref={slideContainer}>
+      {/* if not showing trailer, use bgImage */}
+      {!showTrailer && (
+        <div
+          className="hero-bg"
+          style={{ backgroundImage: `url('${slide.bgImage}')` }}
+        />
+      )}
+
+      {/* trailer video */}
+      {showTrailer && (
+        <video
+          className="hero-video"
+          src={slide.trailer}
+          autoPlay
+          muted
+          onEnded={() => {
+            nextSlide();
+          }}
+        />
+      )}
+
+      <div className="hero-overlay" />
+
+      {/* arrows */}
+      <button
+        className="hero-arrow left"
+        onClick={() => {
+          clearTimeout(trailerTimer.current);
+          prevSlide();
+        }}
+      >
+        <FaChevronLeft />
+      </button>
+      <button
+        className="hero-arrow right"
+        onClick={() => {
+          clearTimeout(trailerTimer.current);
+          nextSlide();
+        }}
+      >
+        <FaChevronRight />
+      </button>
+
+      {/* content */}
+      <div className="hero-content">
+        <div className="hero-tags">
+          {slide.primeBadge && (
+            <span className="tag tag-prime">SoarTV</span>
+          )}
+          {slide.trendingBadge && (
+            <span className="tag tag-trending">
+              {slide.trendingBadge}
+            </span>
+          )}
+        </div>
+
+        <h1 className="hero-title">{slide.title}</h1>
+        <p className="hero-subtitle">{slide.subtitle}</p>
+
+        <div className="hero-buttons">
+          <button className="btn btn-primary">
+            <FaPlay className="btn-icon" /> {slide.actionLabel}
+          </button>
+          <button className="btn btn-secondary">
+            <FaPlus />
+          </button>
+          <button className="btn btn-secondary">
+            <FaInfoCircle />
+          </button>
+        </div>
+
+        {slide.rating && (
+          <span className="tag tag-rating">{slide.rating}</span>
+        )}
+
+        {/* dots */}
+        <div className="hero-dots">
+          {featuredSlides.map((_, idx) => (
+            <span
+              key={idx}
+              className={idx === current ? 'dot active' : 'dot'}
+              onClick={() => {
+                clearTimeout(trailerTimer.current);
+                setCurrent(idx);
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    </header>
+  );
+}

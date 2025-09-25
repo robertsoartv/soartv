@@ -1,0 +1,465 @@
+.hero {
+  position: relative;
+  height: 500px;
+  overflow: hidden;
+}
+
+.hero-bg,
+.hero-video {
+  position: absolute; inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;      /* no letterboxing */
+}
+
+/* Special video fitting for My Name Is Lola slide */
+.hero-slide[data-slide="My Name Is Lola"] .hero-video {
+  object-fit: cover;
+  transform: scale(1.1);
+  background: #000;
+}
+
+/* Special video fitting for From Darkness to Light! slide */
+.hero-slide[data-slide="From Darkness to Light!"] .hero-video {
+  object-fit: cover;
+  background: #000;
+  z-index: 10;
+}
+
+/* Poster background */
+.hero-bg {
+  background-size: cover;
+  background-position: center;
+}
+
+/* Removed blackfade CSS - now using inline styles for Wicked */
+
+/* Removed overlay for clean poster display */
+.hero-overlay {
+  position: absolute; inset: 0;
+}
+/* Arrows */
+.hero-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  padding: 12px;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.hero:hover .hero-arrow {
+  opacity: 1;     /* fade in on hover */
+}
+.hero-arrow:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+.hero-arrow.left {
+  left: 20px;
+}
+.hero-arrow.right {
+  right: 20px;
+}
+
+/* Layout container for poster and content */
+.hero-layout {
+  position: absolute;
+  bottom: 60px;
+  left: 50px;
+  right: 50px;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  gap: 30px;
+}
+
+/* Movie poster */
+.hero-poster {
+  flex-shrink: 0;
+  width: 200px;
+  height: 300px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.hero-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-content {
+  flex: 1;
+  max-width: 600px;
+}
+
+/* Special gradient for Wicked slide */
+.wicked-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 40%, transparent 70%);
+  z-index: 10;
+}
+
+/* Special layout for Wicked slide */
+.hero-content.wicked-layout {
+  text-align: left;
+  align-self: flex-start;
+  margin-top: 80px;
+  z-index: 15;
+}
+
+.hero-content.wicked-layout .hero-title {
+  text-align: left;
+}
+
+/* Special layout for My Name Is Lola slide */
+.hero-content.lola-layout {
+  text-align: left;
+  align-self: flex-start;
+  margin-top: 80px;
+  z-index: 15;
+}
+
+.hero-content.lola-layout .hero-title {
+  text-align: left;
+}
+
+/* Special layout for Soul Damage slide */
+.hero-content.soul-layout {
+  text-align: left;
+  align-self: flex-start;
+  margin-top: 80px;
+  z-index: 15;
+}
+
+.hero-content.soul-layout .hero-title {
+  text-align: left;
+}
+
+/* Special font styling for My Name Is Lola */
+.hero-title.lola-title {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.5rem;
+  color: #f8d7da;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Special font styling for Soul Damage */
+.hero-title.soul-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 4rem;
+  color: #ffffff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  font-weight: 600;
+}
+
+/* Special layout for From Darkness to Light slide */
+.hero-content.darkness-layout {
+  text-align: left;
+  align-self: flex-start;
+  margin-top: 80px;
+  z-index: 15;
+  max-width: 600px;
+  padding-left: 60px;
+}
+
+.hero-content.darkness-layout .hero-title {
+  text-align: left;
+}
+
+.hero-content.darkness-layout .hero-subtitle {
+  text-align: left;
+}
+
+.hero-content.darkness-layout .hero-actions {
+  justify-content: flex-start;
+}
+
+.hero-content.darkness-layout .hero-tags {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+/* Special font styling for From Darkness to Light */
+.hero-title.darkness-title {
+  font-family: 'Georgia', serif;
+  font-size: 2.4rem;
+  background: linear-gradient(45deg, #333333, #888888, #ffffff, #ffd700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  font-weight: bold;
+}
+
+/* Special font styling for !FREAKS! */
+.hero-title.freaks-title {
+  font-family: 'Audiowide', cursive;
+  font-size: 2.2rem;
+  background: linear-gradient(45deg, #0066ff, #0088ff, #ffffff, #0066ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 
+    0 0 10px rgba(0, 102, 255, 0.8),
+    0 0 20px rgba(0, 102, 255, 0.6),
+    0 0 30px rgba(0, 102, 255, 0.4);
+  font-weight: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Special layout for !FREAKS! slide */
+.hero-content.freaks-layout {
+  text-align: left;
+  align-self: flex-start;
+  margin-top: 80px;
+  z-index: 15;
+  max-width: 600px;
+  padding-left: 60px;
+}
+
+.hero-content.freaks-layout .hero-title {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.hero-content.freaks-layout .hero-subtitle {
+  text-align: left;
+  color: #ccc;
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+.hero-content.freaks-layout .hero-buttons {
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.hero-content.freaks-layout .hero-tags {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+/* Special layout for Alphaville slide */
+.hero-content.alphaville-layout {
+  text-align: left;
+  align-self: flex-start;
+  margin-top: 80px;
+  z-index: 15;
+  max-width: 600px;
+  padding-left: 60px;
+}
+
+.hero-content.alphaville-layout .hero-title {
+  text-align: left;
+  margin-bottom: 20px;
+  font-size: 2.2rem;
+  color: #ff00aa;
+  text-shadow: 
+    0 0 10px rgba(255, 0, 170, 0.8),
+    0 0 20px rgba(255, 0, 170, 0.6),
+    0 0 30px rgba(255, 0, 170, 0.4);
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.hero-content.alphaville-layout .hero-subtitle {
+  text-align: left;
+  color: #ccc;
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+.hero-content.alphaville-layout .hero-buttons {
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.hero-content.alphaville-layout .hero-tags {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+
+
+.title {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  color: #fff;
+}
+
+.tagline {
+  font-family: 'Great Vibes', cursive;
+  font-size: 1.5rem;
+  color: #ccc;
+}
+
+/* Hero banner styling for My Name Is Lola slide */
+.hero-banner {
+  background: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0,0,0,0)),
+    url('/attached_assets/95EEC8AE-407A-46F9-B80E-EEE859F4465F_1753202512174.JPEG') center/cover no-repeat;
+}
+
+.movie-title {
+  font-family: 'Great Vibes', cursive;
+  font-size: 4rem;
+  color: #f5d7db;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+.movie-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  color: #ffffff;
+  font-style: italic;
+  margin-bottom: 10px;
+}
+
+.movie-info {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  color: #cfcfcf;
+  margin-top: 10px;
+}
+
+.cta-button {
+  background-color: #ffffff;
+  color: #000;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 8px;
+  margin-top: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+}
+
+.text-overlay {
+  position: relative;
+  z-index: 20;
+}
+
+.hero-tags { display: flex; gap: 12px; margin-bottom: 12px; }
+.tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px; font-weight: 700; text-transform: uppercase;
+  padding: 4px 8px; border-radius: 3px;
+}
+.tag-prime { 
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  color: #000;
+  font-weight: bold;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.tag-trending { background: #ff8c00; color: #fff; }
+
+.hero-title {
+  font-family: 'Playfair Display', serif;       /* a fat modern serif */
+  font-size: 4rem;
+  margin: 0 0 16px;
+  /* true gradient text clip */
+  background: linear-gradient(90deg, #f9e79f 0%, #d4ac0d 50%, #f7dc6f 100%);
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+}
+
+.hero-logo {
+  height: 120px;
+  width: auto;
+  margin: 0 0 16px;
+  max-width: 400px;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.8));
+}
+
+/* Wicked title styling with Cinzel Decorative font */
+.wicked-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 6rem;
+  
+  /* pink-to-green gradient like the poster */
+  background: linear-gradient(
+    90deg,
+    #e98fb0 0%,
+    #7dbf1d 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+
+  /* a bit of drop-shadow for depth */
+  text-shadow: 0 2px 6px rgba(0,0,0,0.7);
+  margin: 0 0 16px;
+  line-height: 1.1;
+}
+
+.hero-subtitle {
+  font-size: 1rem; max-width: 600px;
+  margin-bottom: 24px; opacity: 0.9;
+}
+
+.hero-buttons {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 16px;
+}
+.btn {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
+  border: none; cursor: pointer; border-radius: 4px;
+}
+.btn-primary {
+  background: #fff; color: #000; padding: 10px 20px;
+}
+.btn-secondary {
+  background: rgba(0,0,0,0.5); color: #fff;
+  width: 40px; height: 40px; justify-content: center;
+}
+
+.tag-rating {
+  position: absolute; bottom: 24px; right: 24px;
+  background: rgba(0,0,0,0.6); color: #fff;
+  font-size: 12px; padding: 4px 8px; border-radius: 3px;
+}
+
+.hero-dots {
+  display: flex; justify-content: center; gap: 8px;
+  margin-top: 16px;
+}
+/* Dots */
+.hero-dots .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.hero-dots .dot.active {
+  width: 12px;
+  background: #ffd700;
+}

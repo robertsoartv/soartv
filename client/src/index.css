@@ -1,0 +1,391 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fix outline button visibility on dark backgrounds */
+.dark button[data-variant="outline"],
+button[data-variant="outline"] {
+  border-color: rgb(107 114 128) !important; /* gray-500 */
+  color: white !important; /* Always white text */
+  background-color: rgb(55 65 81) !important; /* gray-700 background */
+}
+
+.dark button[data-variant="outline"]:hover,
+button[data-variant="outline"]:hover {
+  background-color: rgb(75 85 99) !important; /* gray-600 */
+  color: white !important;
+  border-color: rgb(156 163 175) !important; /* gray-400 */
+}
+
+/* Modal Styles */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.modal-content {
+  background: #1f2937; /* Dark background to match SoarTV theme */
+  color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  border: 1px solid #374151;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Custom scrollbar styles for horizontal movie rows */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Smooth scrolling for movie rows */
+.overflow-x-auto, .overflow-x-scroll {
+  scroll-behavior: smooth;
+}
+
+/* Custom hover effects for movie cards */
+.movie-card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.movie-card-hover:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* Project Grid Styles for UserProfile */
+.project-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.project-card {
+  background: #111;
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  width: 240px;
+  box-shadow: 0 0 10px gold;
+  transition: transform 0.3s ease;
+}
+
+.project-card:hover {
+  transform: scale(1.05);
+}
+
+/* Profile Menu Hover Effects */
+.profile-menu p:hover {
+  background-color: #333 !important;
+}
+
+@font-face {
+  font-family: 'Ravenscroft';
+  src: url('/fonts/Ravenscroft.woff2') format('woff2'),
+       url('/fonts/Ravenscroft.woff')  format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+h1.wicked-logo {
+  font-family: 'Ravenscroft', serif;
+  font-size: 3rem;
+  color: #fff; /* or your gold/green gradient */
+}
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(240, 10%, 9%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 10%, 15%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(348, 83%, 58%);
+  --accent-foreground: hsl(211, 100%, 99%);
+  --accent-gold: hsl(51, 100%, 50%);
+  --neutral-light: hsl(0, 0%, 92%);
+  --neutral-medium: hsl(227, 49%, 15%);
+  --neutral-dark: hsl(219, 72%, 19%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+  
+  /* Prime Video Colors */
+  --prime-dark: #0f1419;
+  --prime-blue: #00a8e1;
+  --prime-gray: #232f3e;
+  --prime-light-gray: #37475a;
+  --prime-text: #ffffff;
+  --prime-secondary-text: #aab7c4;
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(240, 10%, 9%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 10%, 15%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(348, 83%, 58%);
+  --accent-foreground: hsl(211, 100%, 99%);
+  --accent-gold: hsl(51, 100%, 50%);
+  --neutral-light: hsl(0, 0%, 92%);
+  --neutral-medium: hsl(227, 49%, 15%);
+  --neutral-dark: hsl(219, 72%, 19%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #000;
+    color: white;
+    @apply antialiased;
+  }
+}
+
+@layer utilities {
+  .bg-primary {
+    background-color: var(--primary);
+  }
+  
+  .bg-secondary {
+    background-color: var(--secondary);
+  }
+  
+  .bg-accent {
+    background-color: var(--accent);
+  }
+  
+  .bg-accent-gold {
+    background-color: var(--accent-gold);
+  }
+  
+  .bg-neutral-light {
+    background-color: var(--neutral-light);
+  }
+  
+  .bg-neutral-medium {
+    background-color: var(--neutral-medium);
+  }
+  
+  .bg-neutral-dark {
+    background-color: var(--neutral-dark);
+  }
+  
+  .text-primary {
+    color: var(--primary);
+  }
+  
+  .text-secondary {
+    color: var(--secondary);
+  }
+  
+  .text-accent {
+    color: var(--accent);
+  }
+  
+  .text-accent-gold {
+    color: var(--accent-gold);
+  }
+  
+  .text-neutral-light {
+    color: var(--neutral-light);
+  }
+  
+  .text-neutral-medium {
+    color: var(--neutral-medium);
+  }
+  
+  .text-neutral-dark {
+    color: var(--neutral-dark);
+  }
+  
+  .font-inter {
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .font-roboto {
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
+    padding: 15px 30px;
+  }
+
+  .logo {
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffd700;
+    text-transform: lowercase;
+  }
+
+  .nav-links a {
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 16px;
+  }
+
+  .nav-links a:hover {
+    color: #ffd700;
+  }
+
+  .hero {
+    background: url('https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?fit=crop&w=1600&q=80') center/cover no-repeat;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .hero-text {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+
+  .hero p {
+    font-size: 18px;
+    color: #ccc;
+  }
+
+  .movie-row {
+    padding: 20px 30px;
+  }
+
+  .movie-row h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+
+  .movies {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+  }
+
+  .movies img {
+    width: 200px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.2s ease;
+  }
+
+  .movies img:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+
+  .movies video {
+    width: 200px;
+    height: 300px;
+    border-radius: 10px;
+    object-fit: cover;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+  }
+
+  .movies video:hover {
+    transform: scale(1.05);
+  }
+
+  .movie {
+    flex-shrink: 0;
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 600px) {
+    .nav-links {
+      display: none;
+    }
+
+    .hero h1 {
+      font-size: 24px;
+    }
+
+    .hero p {
+      font-size: 14px;
+    }
+
+    .movies img,
+    .movies video {
+      width: 150px;
+      height: 225px;
+    }
+  }
+}

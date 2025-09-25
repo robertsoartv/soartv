@@ -1,0 +1,28 @@
+.movie-row {
+  padding: 20px 30px;
+}
+
+.movie-row h2 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: white;
+}
+
+.movies {
+  display: flex;
+  overflow-x: auto;
+  gap: 15px;
+}
+
+.movies video {
+  width: 200px;
+  height: 300px;
+  border-radius: 10px;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.movies video:hover {
+  transform: scale(1.05);
+}

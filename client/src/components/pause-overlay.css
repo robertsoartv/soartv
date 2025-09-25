@@ -1,0 +1,51 @@
+.pause-bar {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 10px 20px;
+  color: white;
+  z-index: 999;
+  text-align: center;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.pause-caption {
+  margin: 0;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.pause-links {
+  margin-top: 5px;
+}
+
+.btn-gold, .btn-dark {
+  display: inline-block;
+  margin: 5px 10px;
+  padding: 8px 16px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.btn-gold {
+  background-color: gold;
+  color: black;
+}
+
+.btn-dark {
+  background-color: #222;
+  color: white;
+}
+
+.btn-gold:hover {
+  background-color: #e6c200;
+}
+
+.btn-dark:hover {
+  background-color: #444;
+}

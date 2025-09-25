@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SoarTV Signup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
+    }
+    body {
+      background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      position: relative;
+    }
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+      background: linear-gradient(to right, gold, red);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+    }
+    .container {
+      background-color: rgba(0,0,0,0.6);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      width: 90%;
+      max-width: 400px;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    p {
+      font-size: 0.9rem;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #ccc;
+    }
+    .btn-google {
+      width: 100%;
+      padding: 10px;
+      background: white;
+      color: #333;
+      border: none;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .divider {
+      text-align: center;
+      margin: 20px 0;
+      position: relative;
+    }
+    .divider::before, .divider::after {
+      content: "";
+      position: absolute;
+      height: 1px;
+      background: #555;
+      top: 50%;
+      width: 40%;
+    }
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+    .divider span {
+      background: rgba(0,0,0,0.6);
+      padding: 0 10px;
+      color: #aaa;
+    }
+    .form input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 5px;
+      background: #222;
+      color: white;
+    }
+    .form button {
+      width: 100%;
+      padding: 10px;
+      background: linear-gradient(to right, gold, orange);
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .shop-link {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #aaa;
+    }
+    .shop-link a {
+      color: gold;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">Soar<span style="color: red">TV</span></div>
+  <div class="container">
+    <h1>Let's get you set up</h1>
+    <p>It's free. No subscription required</p>
+    <button class="btn-google">Continue with Google</button>
+    <div class="divider"><span>OR</span></div>
+    <form class="form">
+      <input type="text" placeholder="First Name" required>
+      <input type="email" placeholder="Email" required>
+      <input type="password" placeholder="Password" required>
+      <button type="submit">Next</button>
+    </form>
+    <div class="shop-link">
+      🎬 Paused? <a href="https://linktr.ee/FilmFlow7" target="_blank">Shop the look on FilmFlow7</a>
+    </div>
+  </div>
+</body>
+</html>

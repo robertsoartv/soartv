@@ -1,0 +1,127 @@
+.preferences-container {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(145deg, #0d1117, #1a1f29);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 2rem;
+}
+
+.preferences-content {
+  background: #161b22;
+  padding: 2rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+  max-width: 500px;
+  width: 100%;
+}
+
+.preferences-title {
+  margin-top: 0;
+  margin-bottom: 2rem;
+  color: #facc15;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.preferences-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.section-label {
+  font-weight: 600;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.checkbox-group,
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.checkbox-label,
+.radio-label {
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: #e6edf3;
+}
+
+.checkbox-label input[type="checkbox"],
+.radio-label input[type="radio"] {
+  width: auto;
+  margin: 0;
+  cursor: pointer;
+}
+
+.theme-select {
+  width: 100%;
+  padding: 0.6rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #0d1117;
+  color: white;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.theme-select:focus {
+  outline: none;
+  background-color: #1a1f29;
+}
+
+.save-button {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #facc15;
+  color: #0d1117;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.save-button:hover {
+  background-color: #eab308;
+  color: #0d1117;
+}
+
+.save-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #666;
+}
+
+@media (max-width: 768px) {
+  .preferences-container {
+    padding: 1rem;
+  }
+  
+  .preferences-content {
+    padding: 1.5rem 2rem;
+  }
+  
+  .checkbox-group,
+  .radio-group {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}

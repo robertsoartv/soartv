@@ -1,0 +1,66 @@
+// src/UploadProject.js
+import React, { useState } from 'react';
+import { db, auth, storage } from './firebase';
+import { addDoc, collection } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
+export default function UploadProject() {
+  const [title, setTitle] = useState('');
+  const [genre, setGenre] = useState('');
+  const [description, setDescription] = useState('');
+  const [poster, setPoster] = useState(null);
+  const [video, setVideo] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const user = auth.currentUser;
+    if (!user) return alert("Please sign in.");
+
+    // Upload poster
+    const posterRef = ref(storage, `posters/${user.uid}-${poster.name}`);
+    await uploadBytes(posterRef, poster);
+    const posterURL = await getDownloadURL(posterRef);
+
+    // Upload video
+    const videoRef = ref(storage, `videos/${user.uid}-${video.name}`);
+    await uploadBytes(videoRef, video);
+    const videoURL = await getDownloadURL(videoRef);
+
+    // Save to Firestore
+    await addDoc(collection(db, "projects"), {
+      userId: user.uid,
+      title,
+      genre,
+      description,
+      posterURL,
+      videoURL,
+      createdAt: new Date()
+    });
+
+    alert("Project uploaded!");
+    setTitle('');
+    setGenre('');
+    setDescription('');
+    setPoster(null);
+    setVideo(null);
+  };
+
+  return (
+    <div>
+      <h2>Upload Your Movie or Project</h2>
+      <form onSubmit={handleSubmit}>
+        <input type="text" placeholder="Movie Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+        <input type="text" placeholder="Genre" value={genre} onChange={(e) => setGenre(e.target.value)} required />
+        <textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} required />
+        
+        <p>Upload Poster:</p>
+        <input type="file" accept="image/*" onChange={(e) => setPoster(e.target.files[0])} required />
+        
+        <p>Upload Trailer or Movie:</p>
+        <input type="file" accept="video/*" onChange={(e) => setVideo(e.target.files[0])} required />
+
+        <button type="submit">Upload Project</button>
+      </form>
+    </div>
+  );
+}

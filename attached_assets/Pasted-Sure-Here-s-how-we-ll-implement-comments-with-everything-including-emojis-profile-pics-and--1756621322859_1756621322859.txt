@@ -1,0 +1,124 @@
+Sure! Here's how we'll implement **comments with everything** — including emojis, profile pics, and delete support — for each project in your SoarTV app.
+
+---
+
+## ✅ Comment System (Fully Featured)
+
+### 1. **📦 Firestore Structure**
+Each project has its own `comments` subcollection:
+```bash
+projects (collection)
+  └── [projectId] (document)
+        └── comments (subcollection)
+              └── [commentId] (document)
+                    ├── userId
+                    ├── userName
+                    ├── userPhoto
+                    ├── text
+                    ├── timestamp
+```
+
+---
+
+### 2. **🧠 State & Hooks Setup**
+```tsx
+const [commentText, setCommentText] = useState("");
+const [comments, setComments] = useState<Comment[]>([]);
+
+useEffect(() => {
+  const q = query(
+    collection(db, "projects", projectId, "comments"),
+    orderBy("timestamp", "desc")
+  );
+  const unsub = onSnapshot(q, (snapshot) => {
+    setComments(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+  });
+  return () => unsub();
+}, [projectId]);
+```
+
+---
+
+### 3. **✍️ Add Comment Function**
+```ts
+const handleAddComment = async () => {
+  if (!commentText.trim()) return;
+
+  await addDoc(collection(db, "projects", projectId, "comments"), {
+    text: commentText,
+    userId: currentUser.uid,
+    userName: currentUser.displayName,
+    userPhoto: currentUser.photoURL,
+    timestamp: serverTimestamp(),
+  });
+  setCommentText("");
+};
+```
+
+---
+
+### 4. **🧹 Delete Comment**
+```ts
+const handleDeleteComment = async (commentId: string) => {
+  await deleteDoc(doc(db, "projects", projectId, "comments", commentId));
+};
+```
+
+---
+
+### 5. **🖼 UI Components**
+```tsx
+<div className="mt-4">
+  <h3 className="font-semibold text-lg">Comments</h3>
+
+  <div className="flex items-center gap-2 mt-2">
+    <input
+      type="text"
+      placeholder="Leave a comment..."
+      className="flex-1 px-3 py-2 rounded border"
+      value={commentText}
+      onChange={(e) => setCommentText(e.target.value)}
+    />
+    <button
+      onClick={handleAddComment}
+      className="bg-blue-600 text-white px-3 py-2 rounded"
+    >Post</button>
+  </div>
+
+  <ul className="mt-4 space-y-3">
+    {comments.map((c) => (
+      <li key={c.id} className="bg-gray-50 p-3 rounded flex gap-3 items-start">
+        <img
+          src={c.userPhoto || "/default-avatar.png"}
+          alt="avatar"
+          className="w-10 h-10 rounded-full"
+        />
+        <div className="flex-1">
+          <p className="text-sm font-medium">{c.userName}</p>
+          <p className="text-base">{c.text}</p>
+        </div>
+        {c.userId === currentUser.uid && (
+          <button
+            onClick={() => handleDeleteComment(c.id)}
+            className="text-xs text-red-500 hover:underline"
+          >Delete</button>
+        )}
+      </li>
+    ))}
+  </ul>
+</div>
+```
+
+---
+
+### 6. 🔧 Optional Extras:
+- ✅ Add emoji picker with `emoji-mart`
+- ✅ Add timestamp (e.g., `3 min ago` with `date-fns`)
+- ✅ Auto-scroll to latest comment
+- ✅ Loading spinner during submission
+
+---
+
+Would you like me to drop this into your working component (e.g., `ProjectCard.tsx`, `ProjectDetails.tsx`, or `/pages/project/[id].tsx`) and wire it up now?
+
+Once this is done, we can move on to Step 3: **Save for Later / Bookmark System**!

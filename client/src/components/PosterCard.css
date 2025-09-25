@@ -1,0 +1,23 @@
+.poster-card {
+  position: relative;
+  width: 200px; /* or your flex item width */
+  margin-right: 16px;
+}
+
+.poster-card img {
+  display: block;
+  width: 100%;
+  border-radius: 6px;
+}
+
+.badge-prime {
+  position: absolute;
+  top: 8px; left: 8px;
+  background: #00a8e1;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 3px;
+}

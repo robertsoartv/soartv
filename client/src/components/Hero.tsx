@@ -1,0 +1,78 @@
+import { useState, useEffect, useRef } from 'react';
+import { featuredSlides, Slide } from '../data/featuredSlides';
+import { FaPlay, FaPlus, FaInfoCircle, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import './Hero.css';
+
+export default function Hero() {
+  const [current, setCurrent] = useState(0);
+  const timeoutRef = useRef<number>();
+
+  const nextSlide = () =>
+    setCurrent((prev) => (prev + 1) % featuredSlides.length);
+  const prevSlide = () =>
+    setCurrent((prev) =>
+      prev === 0 ? featuredSlides.length - 1 : prev - 1
+    );
+
+  // auto-advance every 5s
+  useEffect(() => {
+    timeoutRef.current = window.setTimeout(nextSlide, 5000);
+    return () => window.clearTimeout(timeoutRef.current);
+  }, [current]);
+
+  const slide = featuredSlides[current];
+
+  return (
+    <header
+      className="hero"
+      style={{ backgroundImage: `url('${slide.bgImage}')` }}
+    >
+      <div className="hero-overlay" />
+
+      <button className="hero-arrow left" onClick={() => { clearTimeout(timeoutRef.current); prevSlide(); }}>
+        <FaChevronLeft />
+      </button>
+      <button className="hero-arrow right" onClick={() => { clearTimeout(timeoutRef.current); nextSlide(); }}>
+        <FaChevronRight />
+      </button>
+
+      <div className="hero-content">
+        <div className="hero-tags">
+          {slide.primeBadge && <span className="tag tag-prime">SoarTV</span>}
+          {slide.trendingBadge && (
+            <span className="tag tag-trending">{slide.trendingBadge}</span>
+          )}
+        </div>
+
+        <h1 className="hero-title">{slide.title}</h1>
+        <p className="hero-subtitle">{slide.subtitle}</p>
+
+        <div className="hero-buttons">
+          <button className="btn btn-primary">
+            <FaPlay className="btn-icon" /> {slide.actionLabel}
+          </button>
+          <button className="btn btn-secondary">
+            <FaPlus />
+          </button>
+          <button className="btn btn-secondary">
+            <FaInfoCircle />
+          </button>
+        </div>
+
+        {slide.rating && (
+          <span className="tag tag-rating">{slide.rating}</span>
+        )}
+
+        <div className="hero-dots">
+          {featuredSlides.map((_, idx) => (
+            <span
+              key={idx}
+              className={idx === current ? 'dot active' : 'dot'}
+              onClick={() => { clearTimeout(timeoutRef.current); setCurrent(idx); }}
+            />
+          ))}
+        </div>
+      </div>
+    </header>
+  );
+}

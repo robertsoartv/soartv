@@ -1,0 +1,94 @@
+.soartv-nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 24px; 
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 70%, rgba(0, 0, 0, 0.3) 100%);
+  border-bottom: none;
+}
+
+.soartv-nav-left, .soartv-nav-right {
+  display: flex; align-items: center;
+}
+
+/* "SoarTV" text */
+.soartv-logo-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px; font-weight: 600;
+  margin-right: 0;
+  position: relative;
+  z-index: 10;
+}
+
+/* Gold glow for "Soar" */
+.neon-script {
+  color: #ffcc00; /* pure gold */
+  text-shadow:
+    /* tight inner glow */
+    0 0 2px rgba(255, 204,   0, 0.9),
+    /* soft outer glow */
+    0 0 8px rgba(255, 204,   0, 0.6);
+}
+
+/* Red glow for "TV" */
+.neon-sans {
+  color: #ff0000; /* pure red */
+  text-shadow:
+    /* tight inner glow */
+    0 0 2px rgba(255,   0,   0, 0.9),
+    /* soft outer glow */
+    0 0 8px rgba(255,   0,   0, 0.6);
+}
+
+/* Tabs */
+.soartv-links { display: flex; gap: 16px; }
+.soartv-link {
+  position: relative;
+  font-family: 'Inter', sans-serif;
+  color: #ccc; font-size: 14px; text-decoration: none;
+  padding: 6px 12px; border-radius: 4px;
+  transition: color .2s ease;
+}
+.soartv-link:hover { color: #fff; }
+
+/* Active pill */
+.soartv-link.active {
+  color: #fff;
+  background: rgba(255,204,0,0.25);       /* light gold tint */
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 0 8px rgba(255,204,0,0.5),
+    0 0 16px rgba(255,204,0,0.3);
+}
+
+/* vertical divider */
+.soartv-divider {
+  width: 1px; height: 24px; background: #333;
+  margin: 0 24px;
+}
+
+/* small SoarTV logo & Subscriptions */
+.soartv-logo { height: 20px; margin-right: 16px; }
+.soartv-nav-video-large { 
+  height: 80px; 
+  width: auto; 
+  margin-right: 20px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+.soartv-subscriptions {
+  font-family: 'Inter', sans-serif;
+  color: #ccc; font-size: 14px; text-decoration: none;
+}
+.soartv-subscriptions:hover { color: #fff; }
+
+/* Right icons + button */
+.icon-grid, .icon-user {
+  color: #ccc; font-size: 18px; margin-right: 16px; cursor: pointer;
+}
+.soartv-btn {
+  background: #00a8e1; color: #fff; border: none;
+  padding: 8px 16px; border-radius: 4px;
+  font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: background .2s ease;
+}
+.soartv-btn:hover { background: #008eb9; }

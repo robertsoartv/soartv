@@ -1,0 +1,90 @@
+import React, { useEffect, useState } from 'react';
+import { Mic, MicOff } from 'lucide-react';
+
+const VoiceSearchBar = ({ onSearch }: { onSearch: (query: string) => void }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isListening, setIsListening] = useState(false);
+  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
+  const [interimTranscript, setInterimTranscript] = useState('');
+  const [speechSupported, setSpeechSupported] = useState(true);
+
+  useEffect(() => {
+    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+      setSpeechSupported(false);
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recog = new SpeechRecognition();
+    recog.lang = 'en-US';
+    recog.interimResults = true;
+    recog.continuous = false;
+
+    recog.onstart = () => {
+      setIsListening(true);
+      setInterimTranscript('');
+    };
+
+    recog.onend = () => setIsListening(false);
+
+    recog.onresult = (event: SpeechRecognitionEvent) => {
+      let final = '';
+      let interim = '';
+      for (let i = 0; i < event.results.length; i++) {
+        const result = event.results[i];
+        if (result.isFinal) {
+          final += result[0].transcript;
+        } else {
+          interim += result[0].transcript;
+        }
+      }
+
+      if (final) {
+        setSearchTerm(final);
+        setInterimTranscript('');
+        onSearch(final);
+      } else {
+        setInterimTranscript(interim);
+      }
+    };
+
+    setRecognition(recog);
+  }, [onSearch]);
+
+  const handleMicClick = () => {
+    if (recognition && !isListening) recognition.start();
+  };
+
+  return (
+    <div className="relative w-full max-w-xl mx-auto">
+      <div className="flex items-center gap-2">
+        <input
+          type="text"
+          value={searchTerm}
+          placeholder="Search projects..."
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && onSearch(searchTerm)}
+          className="border px-4 py-2 rounded w-full shadow-sm"
+        />
+        {speechSupported ? (
+          <button
+            onClick={handleMicClick}
+            className={`p-2 rounded-full ${isListening ? 'bg-red-200 animate-pulse' : 'bg-gray-200'} transition`}
+            title="Search by voice"
+          >
+            {isListening ? <Mic className="text-red-600" /> : <Mic className="text-gray-600" />}
+          </button>
+        ) : (
+          <MicOff className="text-gray-400" title="Voice search not supported" />
+        )}
+      </div>
+      {isListening && interimTranscript && (
+        <div className="text-sm text-gray-500 mt-1 italic">
+          Listening: “{interimTranscript}...”
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default VoiceSearchBar;

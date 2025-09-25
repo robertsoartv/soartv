@@ -1,0 +1,159 @@
+import { useEffect, useState } from "react";
+import { getAuth } from "firebase/auth";
+import {
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  getFirestore,
+  serverTimestamp,
+} from "firebase/firestore";
+import { app } from "../lib/firebase";
+
+const db = getFirestore(app);
+
+const genresList = [
+  "Action",
+  "Drama",
+  "Comedy",
+  "Romance",
+  "Horror",
+  "Thriller",
+  "Documentary",
+  "Sci-Fi",
+  "Animated",
+  "Musical",
+];
+
+export default function ProfilePage() {
+  const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState({
+    name: "",
+    role: "",
+    photoUrl: "",
+    bio: "",
+    genres: [] as string[],
+  });
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+      if (firebaseUser) {
+        setUser(firebaseUser);
+        const docRef = doc(collection(db, "users"), firebaseUser.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setProfile(docSnap.data() as any);
+        }
+      } else {
+        setUser(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const saveProfile = async () => {
+    if (!user) return;
+    const userRef = doc(db, "users", user.uid);
+    await setDoc(userRef, {
+      ...profile,
+      updatedAt: serverTimestamp(),
+    });
+    alert("Profile saved!");
+  };
+
+  const toggleGenre = (genre: string) => {
+    setProfile((prev) => {
+      const genres = prev.genres.includes(genre)
+        ? prev.genres.filter((g) => g !== genre)
+        : [...prev.genres, genre];
+      return { ...prev, genres };
+    });
+  };
+
+  return (
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-black via-neutral-900 to-black text-white">
+      <div className="max-w-2xl mx-auto bg-neutral-900 p-8 rounded-2xl shadow-md">
+        <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+          🎬 Edit Your Filmmaker Profile
+        </h2>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-semibold text-neutral-300">Name</label>
+            <input
+              className="w-full px-4 py-2 rounded-lg bg-neutral-800 text-white placeholder-neutral-500 border border-neutral-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              placeholder="Enter your full name"
+              value={profile.name}
+              onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-neutral-300">
+              Role (e.g. Director, Actor, Editor)
+            </label>
+            <input
+              className="w-full px-4 py-2 rounded-lg bg-neutral-800 text-white placeholder-neutral-500 border border-neutral-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              placeholder="e.g. Director, Actor, Editor"
+              value={profile.role}
+              onChange={(e) => setProfile({ ...profile, role: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-neutral-300 mb-1">Profile Photo</label>
+            <button className="flex items-center gap-2 px-4 py-2 rounded bg-yellow-500 hover:bg-yellow-400 text-black font-semibold">
+              📸 Upload Photo
+            </button>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-neutral-300">Bio</label>
+            <textarea
+              rows={4}
+              className="w-full px-4 py-2 rounded-lg bg-neutral-800 text-white placeholder-neutral-500 border border-neutral-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              placeholder="Tell us about yourself and your filmmaking goals..."
+              value={profile.bio}
+              onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-neutral-300 mb-2">Favorite Genres</label>
+            <div className="flex flex-wrap gap-2">
+              {genresList.map((genre) => (
+                <button
+                  key={genre}
+                  onClick={() => toggleGenre(genre)}
+                  className={`px-3 py-1 rounded-full border text-sm font-medium transition ${
+                    profile.genres.includes(genre)
+                      ? "bg-yellow-500 text-black"
+                      : "bg-neutral-700 text-white hover:bg-yellow-500 hover:text-black"
+                  }`}
+                >
+                  {genre}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button
+            className="w-full py-3 rounded-lg bg-yellow-500 hover:bg-yellow-400 text-black font-bold transition"
+            onClick={saveProfile}
+          >
+            Save Profile
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-10 max-w-2xl mx-auto bg-neutral-900 p-6 rounded-2xl shadow-md text-center">
+        <h3 className="text-white font-semibold text-lg mb-2">🎥 Your Projects (0)</h3>
+        <p className="text-neutral-400 text-sm mb-4">No projects uploaded yet.</p>
+        <button className="px-4 py-2 bg-yellow-500 text-black font-semibold rounded hover:bg-yellow-400">
+          Upload Your First Project
+        </button>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,112 @@
+// client/src/components/LiveSearchBar.tsx
+
+import React, { useState, useEffect } from "react";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import Link from "next/link";
+import { debounce } from "lodash";
+
+const LiveSearchBar = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [suggestions, setSuggestions] = useState<{ users: any[]; projects: any[] }>({
+    users: [],
+    projects: [],
+  });
+
+  const fetchSuggestions = async (term: string) => {
+    if (!term.trim()) {
+      setSuggestions({ users: [], projects: [] });
+      return;
+    }
+
+    try {
+      const userQuery = query(
+        collection(db, "users"),
+        where("displayName", ">=", term),
+        where("displayName", "<=", term + "\uf8ff")
+      );
+
+      const projectQuery = query(
+        collection(db, "projects"),
+        where("title", ">=", term),
+        where("title", "<=", term + "\uf8ff"),
+        where("public", "==", true)
+      );
+
+      const [userSnap, projectSnap] = await Promise.all([
+        getDocs(userQuery),
+        getDocs(projectQuery),
+      ]);
+
+      setSuggestions({
+        users: userSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+        projects: projectSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+      });
+    } catch (err) {
+      console.error("Search error:", err);
+    }
+  };
+
+  const debouncedFetch = debounce(fetchSuggestions, 300);
+
+  useEffect(() => {
+    debouncedFetch(searchTerm);
+    return () => debouncedFetch.cancel();
+  }, [searchTerm]);
+
+  return (
+    <div className="relative max-w-lg mx-auto">
+      <input
+        type="text"
+        placeholder="🔍 Search projects or users..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="w-full p-3 rounded-xl border shadow focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        autoComplete="off"
+      />
+
+      {searchTerm && (
+        <div className="absolute mt-1 w-full bg-white border rounded-xl shadow z-50 max-h-80 overflow-y-auto">
+          {suggestions.users.length > 0 && (
+            <>
+              <div className="px-4 py-2 font-semibold text-gray-500">👤 Users</div>
+              {suggestions.users.map((user) => (
+                <Link href={`/public-profile/${user.id}`} key={user.id}>
+                  <div className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                    <img
+                      src={user.photoURL || "/placeholder.png"}
+                      className="w-6 h-6 rounded-full"
+                      alt="User"
+                    />
+                    <span>{user.displayName}</span>
+                  </div>
+                </Link>
+              ))}
+            </>
+          )}
+
+          {suggestions.projects.length > 0 && (
+            <>
+              <div className="px-4 py-2 font-semibold text-gray-500">🎬 Projects</div>
+              {suggestions.projects.map((project) => (
+                <Link href={`/project/${project.id}`} key={project.id}>
+                  <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                    {project.title}
+                  </div>
+                </Link>
+              ))}
+            </>
+          )}
+
+          {suggestions.users.length === 0 && suggestions.projects.length === 0 && (
+            <div className="px-4 py-3 text-gray-500 italic text-center">
+              No matches found
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default LiveSearchBar;

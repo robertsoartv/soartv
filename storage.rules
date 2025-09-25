@@ -1,0 +1,33 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Profile photos - users can only access their own
+    match /profilePhotos/{userId} {
+      allow read: if true; // Profile photos are publicly readable
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Project files - organized by user  
+    match /projects/{userId}/{allPaths=**} {
+      allow read: if true; // Project files are publicly readable once uploaded
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Legacy posters and videos paths - more permissive for authenticated users
+    match /posters/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    match /videos/{fileName} {
+      allow read: if true; 
+      allow write: if request.auth != null;
+    }
+    
+    // Catch-all for authenticated users (temporary for debugging)
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}

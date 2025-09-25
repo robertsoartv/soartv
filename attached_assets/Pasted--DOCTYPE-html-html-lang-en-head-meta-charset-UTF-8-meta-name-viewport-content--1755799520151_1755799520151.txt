@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SoarTV | Account Setup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #0d1117, #1a1f29);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .setup-container {
+      background: #161b22;
+      padding: 2rem 3rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+      max-width: 500px;
+      width: 100%;
+    }
+    h2 {
+      margin-top: 0;
+      color: #facc15;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    input[type="text"], select {
+      width: 100%;
+      padding: 0.6rem;
+      border: none;
+      border-radius: 6px;
+      background-color: #0d1117;
+      color: white;
+    }
+    .checkbox-group, .radio-group {
+      margin-bottom: 1rem;
+    }
+    .checkbox-group label,
+    .radio-group label {
+      font-weight: normal;
+      display: inline-block;
+      margin-right: 1rem;
+    }
+    button {
+      margin-top: 1rem;
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #facc15;
+      color: #0d1117;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #eab308;
+    }
+  </style>
+</head>
+<body>
+  <div class="setup-container">
+    <h2>Account Personalization</h2>
+    <form id="preferencesForm">
+      <label for="genres">What genres do you enjoy?</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="genres" value="Action"> Action</label>
+        <label><input type="checkbox" name="genres" value="Drama"> Drama</label>
+        <label><input type="checkbox" name="genres" value="Comedy"> Comedy</label>
+        <label><input type="checkbox" name="genres" value="Thriller"> Thriller</label>
+        <label><input type="checkbox" name="genres" value="Romance"> Romance</label>
+      </div>
+
+      <label>What do you prefer to watch?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="watch_preference" value="Movies"> Movies</label>
+        <label><input type="radio" name="watch_preference" value="Series"> Series</label>
+        <label><input type="radio" name="watch_preference" value="Both" checked> Both</label>
+      </div>
+
+      <label for="notifications">Receive New Release Alerts?</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="notifications" value="true" checked> Yes, keep me updated</label>
+      </div>
+
+      <label for="theme">Theme Preference</label>
+      <select name="theme">
+        <option value="Dark">Dark</option>
+        <option value="Light">Light</option>
+        <option value="Auto" selected>Auto</option>
+      </select>
+
+      <button type="submit">Save & Continue</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("preferencesForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const preferences = {
+        genres: form.getAll("genres"),
+        watch_preference: form.get("watch_preference"),
+        notifications: form.get("notifications") === "true",
+        theme: form.get("theme"),
+      };
+      console.log("User Preferences:", preferences);
+      // TODO: Send to database via fetch or Supabase/Firebase SDK
+      alert("Preferences saved!");
+      window.location.href = "/dashboard"; // or your homepage route
+    });
+  </script>
+</body>
+</html>

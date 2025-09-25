@@ -1,0 +1,72 @@
+// client/src/UserProfile.tsx
+
+import { useEffect, useState } from "react";
+import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth";
+import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
+import { app } from "./firebase"; // adjust import path to your firebase config
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+export default function UserProfile() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [projects, setProjects] = useState<any[]>([]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (!currentUser) {
+        window.location.href = "/login"; // redirect if not logged in
+      } else {
+        setUser(currentUser);
+        await fetchProjects(currentUser.uid);
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const fetchProjects = async (uid: string) => {
+    const q = query(collection(db, "projects"), where("owner", "==", uid));
+    const snapshot = await getDocs(q);
+    const userProjects = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    setProjects(userProjects);
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Sign-out error:", error);
+    }
+  };
+
+  if (loading) return <p>Loading your profile...</p>;
+
+  return (
+    <div style={{ padding: "1rem" }}>
+      <h1>Welcome, {user?.displayName || user?.email}</h1>
+      <p>Email: {user?.email}</p>
+
+      <button onClick={handleSignOut} style={{ margin: "1rem 0", padding: "0.5rem" }}>
+        Sign Out
+      </button>
+
+      <h2>Your Uploaded Projects</h2>
+      {projects.length === 0 ? (
+        <p>No projects found.</p>
+      ) : (
+        <ul>
+          {projects.map((proj) => (
+            <li key={proj.id}>
+              <strong>{proj.title}</strong><br />
+              <em>{proj.description}</em>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}

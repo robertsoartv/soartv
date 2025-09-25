@@ -1,0 +1,119 @@
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { db } from "@/lib/firebase";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+import Link from "next/link";
+
+const SearchResultsPage = () => {
+  const router = useRouter();
+  const { query: urlQuery } = router.query;
+
+  const [users, setUsers] = useState<any[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchResults = async (term: string) => {
+    if (!term.trim()) return;
+
+    setLoading(true);
+    try {
+      const userQuery = query(
+        collection(db, "users"),
+        where("displayName", ">=", term),
+        where("displayName", "<=", term + "\uf8ff")
+      );
+      const projectQuery = query(
+        collection(db, "projects"),
+        where("title", ">=", term),
+        where("title", "<=", term + "\uf8ff"),
+        where("public", "==", true)
+      );
+
+      const [userSnap, projectSnap] = await Promise.all([
+        getDocs(userQuery),
+        getDocs(projectQuery),
+      ]);
+
+      setUsers(userSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      setProjects(projectSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+    } catch (err) {
+      console.error("Search error:", err);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (typeof urlQuery === "string") {
+      fetchResults(urlQuery);
+    }
+  }, [urlQuery]);
+
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-4">Search results for: "{urlQuery}"</h1>
+
+      {loading && <p className="text-gray-500">Loading...</p>}
+
+      {!loading && (
+        <>
+          {users.length > 0 && (
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold mb-2">👤 Users</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {users.map((user) => (
+                  <Link href={`/public-profile/${user.id}`} key={user.id}>
+                    <div className="p-4 border rounded-xl hover:shadow transition cursor-pointer flex gap-3 items-center">
+                      <img
+                        src={user.photoURL || "/placeholder.png"}
+                        alt="User"
+                        className="w-10 h-10 rounded-full"
+                      />
+                      <div>
+                        <div className="font-medium">{user.displayName}</div>
+                        <div className="text-sm text-gray-500">{user.bio || "Filmmaker"}</div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {projects.length > 0 && (
+            <div>
+              <h2 className="text-xl font-semibold mb-2">🎬 Projects</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {projects.map((project) => (
+                  <Link href={`/project/${project.id}`} key={project.id}>
+                    <div className="border rounded-xl p-4 hover:shadow transition cursor-pointer">
+                      {project.posterURL && (
+                        <img
+                          src={project.posterURL}
+                          alt="Poster"
+                          className="w-full h-48 object-cover rounded-md mb-2"
+                        />
+                      )}
+                      <h3 className="font-semibold text-lg">{project.title}</h3>
+                      <p className="text-sm text-gray-600 line-clamp-2">{project.description}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {users.length === 0 && projects.length === 0 && (
+            <p className="text-gray-500 italic">No results found.</p>
+          )}
+        </>
+      )}
+    </div>
+  );
+};
+
+export default SearchResultsPage;
