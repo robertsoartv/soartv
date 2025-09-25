@@ -12,7 +12,6 @@
     "check": "tsc",
     "db:push": "drizzle-kit push"
     }
-    "dependencies":
   "engines": {
     "node": "20.x"
   }
