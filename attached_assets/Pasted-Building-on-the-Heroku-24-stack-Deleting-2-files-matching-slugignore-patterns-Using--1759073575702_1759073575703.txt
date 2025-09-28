@@ -1,0 +1,81 @@
+Building on the Heroku-24 stack
+-----> Deleting 2 files matching .slugignore patterns.
+-----> Using buildpack: heroku/nodejs
+-----> Node.js app detected
+       
+-----> Creating runtime environment
+       
+       NPM_CONFIG_PRODUCTION=false
+       NPM_CONFIG_LOGLEVEL=error
+       NODE_VERBOSE=false
+       NODE_ENV=production
+       NODE_MODULES_CACHE=true
+       
+-----> Installing binaries
+       engines.node (package.json):   20.x
+       engines.npm (package.json):    9.x
+       
+       Resolving node version 20.x...
+       Downloading and installing node 20.19.5...
+       Validating checksum
+       Bootstrapping npm 9.x (replacing 10.8.2)...
+       npm warn config production Use `--omit=dev` instead.
+       npm 9.9.4 installed
+       
+-----> Installing dependencies
+       Installing node modules
+       
+       added 761 packages, and audited 762 packages in 12s
+       
+       97 packages are looking for funding
+         run `npm fund` for details
+       
+       5 moderate severity vulnerabilities
+       
+       To address all issues (including breaking changes), run:
+         npm audit fix --force
+       
+       Run `npm audit` for details.
+       npm notice 
+       npm notice New major version of npm available! 9.9.4 -> 11.6.1
+       npm notice Changelog: <https://github.com/npm/cli/releases/tag/v11.6.1>
+       npm notice Run `npm install -g npm@11.6.1` to update!
+       npm notice 
+       
+-----> Build
+       Detected both "build" and "heroku-postbuild" scripts
+       Running heroku-postbuild
+       
+       > soartv@1.0.0 heroku-postbuild
+       > NPM_CONFIG_PRODUCTION=false npm install --force --legacy-peer-deps --no-audit --no-fund && npm run build && npm prune --production
+       
+       
+       up to date in 742ms
+       
+       > soartv@1.0.0 build
+       > vite build --config ./vite.config.ts
+       
+       vite v5.4.20 building for production...
+       transforming...
+       ✓ 2 modules transformed.
+       x Build failed in 34ms
+       error during build:
+       Could not resolve "./src/main.tsx" from "client/index.html"
+       file: /tmp/build_2fec6326/client/index.html
+           at getRollupError (file:///tmp/build_2fec6326/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
+           at error (file:///tmp/build_2fec6326/node_modules/rollup/dist/es/shared/parseAst.js:397:42)
+           at ModuleLoader.handleInvalidResolvedId (file:///tmp/build_2fec6326/node_modules/rollup/dist/es/shared/node-entry.js:21564:24)
+           at file:///tmp/build_2fec6326/node_modules/rollup/dist/es/shared/node-entry.js:21524:26
+-----> Build failed
+       
+       We're sorry this build is failing! You can troubleshoot common issues here:
+       https://devcenter.heroku.com/articles/troubleshooting-node-deploys
+       
+       If you're stuck, please submit a ticket so we can help:
+       https://help.heroku.com/
+       
+       Love,
+       Heroku
+       
+ !     Push rejected, failed to compile Node.js app.
+ !     Push failed
