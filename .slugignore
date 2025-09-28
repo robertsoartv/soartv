@@ -24,3 +24,21 @@ client/.eslintcache
 # if you keep raw assets not needed at runtime (keep dist/)
 client/public
 # client/src - REMOVED: needed for Vite build process
+
+# Large assets - should be served from object storage, not bundled
+attached_assets
+public
+
+# Build artifacts and caches
+*.tsbuildinfo
+.cache
+.vite
+.eslintcache
+coverage
+*.lcov
+
+# Development files
+*.map
+*.log
+.env.local
+.env.development
