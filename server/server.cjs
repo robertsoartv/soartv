@@ -1,17 +1,24 @@
-const express = require('express');
+// server/server.cjs
 const path = require('path');
+const express = require('express');
 
 const app = express();
-app.use(express.json());
+const PORT = process.env.PORT || 3000;
 
-const clientBuildPath = path.join(__dirname, '../dist/public');
-app.use(express.static(clientBuildPath));
+// IMPORTANT: point to ../dist/public *from* server/server.cjs
+const CLIENT_BUILD = path.join(__dirname, '../dist/public');
 
-app.get('/api/health', (_req, res) => res.json({ ok: true }));
+// Serve static assets
+app.use(express.static(CLIENT_BUILD, { index: false }));
 
+// Your API routes go here (if any), e.g.:
+app.get('/api/health', (req, res) => res.json({ ok: true }));
+
+// SPA fallback: always send index.html (AFTER API routes)
 app.get('*', (_req, res) => {
-  res.sendFile(path.join(clientBuildPath, 'index.html'));
+  res.sendFile(path.join(CLIENT_BUILD, 'index.html'));
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`SoarTV server listening on ${port}`));
+app.listen(PORT, () => {
+  console.log(`SoarTV server listening on ${PORT}`);
+});
