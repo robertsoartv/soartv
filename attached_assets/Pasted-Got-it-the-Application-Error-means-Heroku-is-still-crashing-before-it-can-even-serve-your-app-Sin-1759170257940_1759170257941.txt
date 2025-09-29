@@ -1,0 +1,55 @@
+Got it — the Application Error means Heroku is still crashing before it can even serve your app. Since you already set your Firebase Config Vars correctly, the problem is likely in server.js or package.json.
+Here’s what you should do step by step:
+1. Double-check package.json
+From your screenshot earlier:
+"start": "node server.js"
+✅ That’s correct — make sure there’s no trailing comma or typo. Heroku uses this as the entry point.
+2. Verify server.js
+At the root of your project, server.js should look something like this:
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Serve Vite build files
+app.use(express.static(path.join(__dirname, "dist", "public")));
+
+// Fallback for SPA routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "public", "index.html"));
+});
+
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+});
+👉 If this file is missing, misnamed, or pointing to the wrong directory, Heroku will throw MODULE_NOT_FOUND.
+3. Check your build output
+Run this locally (or in Replit shell):
+npm run build
+Confirm that your files end up in:
+dist/public/index.html
+If they end up only in dist/, update server.js to point there.
+4. Confirm environment variables
+Your Heroku Config Vars now look good ✅
+But ensure your frontend is referencing them like this:
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+};
+5. Tail the logs
+This is the most important step. Run in your terminal:
+heroku logs --tail
+Look for:
+Error: Cannot find module ... → means path issue (server.js not found or mislocated).
+ReferenceError → code bug.
+ENOENT → missing build files.
