@@ -6,7 +6,7 @@
       "license": "MIT",
       "scripts": {
             "dev": "NODE_ENV=development tsx server/index.ts",
-            "start": "node server/server.js",
+            "start": "node server.js",
             "build": "vite build --config ./vite.config.ts",
             "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --force --legacy-peer-deps --no-audit --no-fund && npm run build && npm prune --production",
             "check": "tsc -p tsconfig.json",
