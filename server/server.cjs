@@ -1,36 +1,35 @@
 // server/server.cjs
-const path = require("path");
 const express = require("express");
+const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Where Vite put the build (matches your build logs)
-const publicDir = path.resolve(__dirname, "../dist/public");
+// absolute path to Vite output: dist/public
+const distPublic = path.resolve(__dirname, "../dist/public");
 
-// Serve static assets (don't auto-serve index.html here)
-app.use(
-  express.static(publicDir, {
-    index: false,
-    maxAge: "1y",
-    setHeaders: (res, filePath) => {
-      if (filePath.endsWith(".html")) {
-        res.setHeader("Cache-Control", "no-cache");
-      }
-    },
-  })
-);
+// serve static assets (no index to avoid double send)
+app.use(express.static(distPublic, {
+  index: false,
+  maxAge: "1y",
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith(".html")) {
+      res.setHeader("Cache-Control", "no-cache");
+    }
+  }
+}));
 
-// ---- Your API routes (if any) should be mounted BEFORE the SPA fallback ----
-// Example:
-// const api = require('./api'); 
-// app.use('/api', api);
+// (optional) simple health check
+app.get("/health", (_, res) => res.status(200).send("ok"));
 
-// SPA fallback: anything not handled above returns index.html
-app.get("*", (_req, res) => {
-  res.sendFile(path.join(publicDir, "index.html"));
+// your API routes go here (before SPA fallback)
+// e.g. app.get("/api/hello", (_,res)=>res.json({ok:true}));
+
+// SPA fallback — always send index.html so /route loads the app
+app.get("*", (_, res) => {
+  res.sendFile(path.join(distPublic, "index.html"));
 });
 
 app.listen(PORT, () => {
-  console.log(`SoarTV production server listening on ${PORT}`);
+  console.log(`SoarTV listening on ${PORT}`);
 });
