@@ -8,6 +8,7 @@ import {
   FaChevronLeft,
   FaChevronRight,
 } from 'react-icons/fa';
+import Player from './Player';
 import './HeroCarousel.css';
 
 export default function HeroCarousel() {
@@ -165,25 +166,36 @@ export default function HeroCarousel() {
         />
       )}
 
-      {/* trailer video - fallback to poster if video fails */}
+      {/* trailer video - YouTube iframe or HLS/MP4 player */}
       {showTrailer && !videoFailed && (
-        <video
-          className="hero-video"
-          src={slide.trailer}
-          autoPlay
-          muted
-          onError={(e) => {
-            console.warn('⚠️ Video unavailable (expected on Heroku), showing poster instead');
-            setVideoFailed(true);
-            setShowTrailer(false);
-          }}
-          onLoadStart={() => {
-            console.log('📹 Video loading:', slide.trailer);
-          }}
-          onEnded={() => {
-            nextSlide();
-          }}
-        />
+        <>
+          {slide.trailer.includes('youtube.com') || slide.trailer.includes('youtu.be') ? (
+            <iframe
+              className="hero-video"
+              src={slide.trailer.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/') + '?autoplay=1&mute=1&controls=0&loop=1&playlist=' + slide.trailer.split('v=')[1]?.split('&')[0]}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              title={slide.title}
+              style={{ border: 'none', width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, objectFit: 'cover' }}
+            />
+          ) : (
+            <div className="hero-video">
+              <Player
+                src={slide.trailer}
+                className="w-full h-full object-cover"
+                autoPlay
+                muted
+                controls={false}
+                onEnded={() => nextSlide()}
+                onError={(error) => {
+                  console.warn('⚠️ Video unavailable, showing poster instead');
+                  setVideoFailed(true);
+                  setShowTrailer(false);
+                }}
+              />
+            </div>
+          )}
+        </>
       )}
 
       {/* Only show overlay and gradients for non-Wicked/!FREAKS!/Alphaville slides */}

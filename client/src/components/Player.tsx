@@ -5,8 +5,13 @@ interface PlayerProps {
   src: string;
   poster?: string;
   className?: string;
+  autoPlay?: boolean;
+  muted?: boolean;
+  loop?: boolean;
+  controls?: boolean;
   onPlay?: () => void;
   onPause?: () => void;
+  onEnded?: () => void;
   onError?: (error: any) => void;
 }
 
@@ -14,8 +19,13 @@ export default function Player({
   src, 
   poster, 
   className = "w-full", 
+  autoPlay = false,
+  muted = false,
+  loop = false,
+  controls = true,
   onPlay, 
   onPause,
+  onEnded,
   onError 
 }: PlayerProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -82,11 +92,15 @@ export default function Player({
     <video
       ref={videoRef}
       poster={poster}
-      controls
+      autoPlay={autoPlay}
+      muted={muted}
+      loop={loop}
+      controls={controls}
       playsInline
       className={className}
       onPlay={onPlay}
       onPause={onPause}
+      onEnded={onEnded}
       onError={(e) => {
         console.error("Video playback error:", e);
         if (onError) onError(e);
