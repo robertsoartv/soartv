@@ -76,6 +76,7 @@
             "firebase": "^12.1.0",
             "framer-motion": "^11.13.1",
             "google-auth-library": "^10.3.0",
+            "hls.js": "^1.6.13",
             "input-otp": "^1.4.2",
             "lodash": "^4.17.21",
             "lucide-react": "^0.453.0",

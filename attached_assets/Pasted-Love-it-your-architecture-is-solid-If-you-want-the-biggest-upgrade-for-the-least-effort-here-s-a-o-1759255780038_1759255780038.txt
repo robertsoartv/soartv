@@ -1,0 +1,98 @@
+Love it—your architecture is solid. If you want the biggest upgrade for the least effort, here’s a one-hour “pro tier” plan you can copy-paste.
+1) Lock videos behind login (Firebase Storage Rules)
+If your files live under videos/ in your bucket:
+// storage.rules
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Only signed-in users can read anything under /videos/**
+    match /videos/{path=**} {
+      allow read: if request.auth != null;
+      // Example: only admins can write
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+  }
+}
+Deploy from Firebase console → Storage → Rules (or firebase deploy --only storage).
+2) Better streaming (HLS) — client-side only
+Install once:
+npm i hls.js
+Drop-in player (React):
+// src/components/Player.tsx
+import { useEffect, useRef } from "react";
+import Hls from "hls.js";
+
+export default function Player({ src }: { src: string }) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !src) return;
+
+    if (src.endsWith(".m3u8") && Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(src);
+      hls.attachMedia(video);
+      return () => hls.destroy();
+    } else {
+      video.src = src; // MP4/native HLS fallback
+    }
+  }, [src]);
+
+  return <video ref={videoRef} controls playsInline className="w-full" />;
+}
+Use:
+// <Player src={signedOrSDKUrlToYourMasterM3U8OrMP4} />
+If you’re uploading MP4s today, you can still use this player now. When you start producing HLS (.m3u8 + .ts/.mp4 segments), it will automatically adapt.
+3) (Optional) Stronger security with short-lived Signed URLs
+Keep files private in Storage and hand out 10-minute links from your API.
+Env var (Heroku Settings → Config Vars):
+FIREBASE_STORAGE_BUCKET = soartv-7c924.appspot.com
+GOOGLE_APPLICATION_CREDENTIALS_JSON = base64 of your service-account JSON
+(In the Firebase console → Project settings → Service accounts → Generate new private key; base64-encode the JSON before pasting.)
+API route (Express, ESM):
+// server/stream-url.js (or inside server.js)
+import { Storage } from "@google-cloud/storage";
+
+const creds = JSON.parse(
+  Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON, "base64").toString("utf8")
+);
+const storage = new Storage({ credentials: creds });
+const bucket = process.env.FIREBASE_STORAGE_BUCKET;
+
+export async function getSignedUrl(objectPath) {
+  const [url] = await storage.bucket(bucket).file(objectPath).getSignedUrl({
+    version: "v4",
+    action: "read",
+    expires: Date.now() + 10 * 60 * 1000, // 10 minutes
+  });
+  return url;
+}
+
+// in server.js
+import express from "express";
+import { getSignedUrl } from "./server/stream-url.js";
+
+app.get("/api/stream-url", async (req, res) => {
+  try {
+    // TODO: verify Firebase ID token from Authorization header
+    const objectPath = req.query.path; // e.g. "videos/movie123/master.m3u8"
+    if (!objectPath) return res.status(400).json({ error: "Missing path" });
+    const url = await getSignedUrl(objectPath);
+    res.json({ url, expiresIn: 600 });
+  } catch (e) {
+    res.status(500).json({ error: "Failed to sign URL" });
+  }
+});
+Client usage:
+const { url } = await fetch(`/api/stream-url?path=${encodeURIComponent("videos/movie123/master.m3u8")}`, {
+  headers: { Authorization: `Bearer ${idToken}` } // Firebase auth token
+}).then(r => r.json());
+
+// <Player src={url} />
+4) (Optional) CDN boost (later)
+When ready, put a CDN in front of your bucket (Cloudflare or Google Cloud CDN). Keep files private and still use signed URLs—CDN will cache edge segments and slash bandwidth cost.
+What I recommend you do today
+Apply the Storage Rules (Step 1).
+Add the HLS-ready Player (Step 2).
+If you want pay-per-view or stricter control, add Signed URLs (Step 3).
