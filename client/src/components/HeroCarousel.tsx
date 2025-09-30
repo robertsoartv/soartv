@@ -84,6 +84,23 @@ export default function HeroCarousel() {
   };
 
   const getHeaderStyle = () => {
+    // Show poster image as background when video fails or for slides with immediate posters
+    if (videoFailed || !showTrailer) {
+      return {
+        backgroundImage: `
+          linear-gradient(
+            to right,
+            rgba(0,0,0,0.8) 0%,
+            rgba(0,0,0,0.3) 40%,
+            rgba(0,0,0,0) 70%
+          ),
+          url('${slide.bgImage}')
+        `,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      };
+    }
+    
     if (slide.title === 'Wicked') {
       return {
         backgroundImage: `
