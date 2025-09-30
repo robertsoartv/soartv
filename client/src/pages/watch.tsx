@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,7 +7,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/lib/authContext';
 import { getVideoById, getRelatedVideos, incrementVideoViews, normalizeVideoURL } from '@/lib/firebase';
 import { featuredSlides, movieDetails } from '@/data/featuredSlides';
-import { Play, Pause, Volume2, VolumeX, Maximize, ArrowLeft, Calendar, Eye, Share2, Heart, Plus, User, Star, Clock, Film } from 'lucide-react';
+import { Play, ArrowLeft, Calendar, Eye, Share2, Heart, Plus, User, Star, Clock, Film } from 'lucide-react';
+import Player from '@/components/Player';
 
 interface VideoData {
   id: string;
@@ -37,10 +38,6 @@ export default function Watch() {
   const [video, setVideo] = useState<VideoData | null>(null);
   const [relatedVideos, setRelatedVideos] = useState<VideoData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [videoRef, setVideoRef] = useState<HTMLVideoElement | null>(null);
-  const [showPauseOverlay, setShowPauseOverlay] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -153,36 +150,6 @@ export default function Watch() {
     }
   };
 
-  const togglePlay = async () => {
-    if (videoRef) {
-      try {
-        if (isPlaying) {
-          videoRef.pause();
-        } else {
-          await videoRef.play();
-        }
-      } catch (error) {
-        console.error('Error playing video:', error);
-        // Try to reload video if play fails
-        videoRef.load();
-      }
-    } else {
-      console.error('Video element not ready');
-    }
-  };
-
-  const toggleMute = () => {
-    if (videoRef) {
-      videoRef.muted = !videoRef.muted;
-      setIsMuted(videoRef.muted);
-    }
-  };
-
-  const toggleFullscreen = () => {
-    if (videoRef && videoRef.requestFullscreen) {
-      videoRef.requestFullscreen();
-    }
-  };
 
   const formatViews = (views: number): string => {
     if (views >= 1000000) {
@@ -350,7 +317,9 @@ export default function Watch() {
                 {/* Action Buttons */}
                 <div className="flex items-center space-x-4">
                   <Button
-                    onClick={togglePlay}
+                    onClick={() => {
+                      document.querySelector('.bg-gray-900')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
                     size="lg"
                     className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-8 py-3 text-lg"
                   >
@@ -416,80 +385,13 @@ export default function Watch() {
                 title={video.title}
               />
             ) : (
-              <video
-                ref={setVideoRef}
+              <Player
                 src={normalizeVideoURL(video.videoURL)}
                 poster={video.posterURL}
                 className="w-full h-full object-cover"
-                onPlay={() => {
-                  setIsPlaying(true);
-                  setShowPauseOverlay(false);
-                }}
-                onPause={() => {
-                  setIsPlaying(false);
-                  setShowPauseOverlay(true);
-                }}
-                onLoadedData={() => console.log('Video loaded')}
-                onError={(e) => console.error('Video error:', e)}
-                preload="metadata"
-                controls
+                onError={(error) => console.error('Video playback error:', error)}
               />
             )}
-
-            {/* Shop the Scene Pause Overlay */}
-            {showPauseOverlay && !isPlaying && (
-              <div className="absolute inset-0 bg-black/20 flex flex-col justify-end pointer-events-none">
-                <div className="bg-black/80 p-6 pointer-events-auto">
-                  <h3 className="text-white text-lg font-semibold mb-4 text-center">Shop the Scene</h3>
-                  <div className="flex items-center justify-between max-w-md mx-auto">
-                    <Button className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-6 py-2 rounded">
-                      Marketplace
-                    </Button>
-                    <div className="text-white">
-                      <span className="text-base">
-                        {video.title === "From Darkness to Light!" && "Starring: Carla Fitzgerald"}
-                        {video.title === "Wicked" && "Starring: Cynthia Erivo"}
-                        {video.title === "My Name Is Lola" && "Starring: Lola Martinez"}
-                        {video.title === "Soul Damage" && "Starring: Marcus Johnson"}
-                        {video.title === "!FREAKS!" && "Starring: Alex Rivera"}
-                        {video.title === "Alphaville" && "Starring: Jean-Luc Godard"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            {/* Custom Controls Overlay */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <Button
-                    onClick={togglePlay}
-                    size="lg"
-                    className="bg-yellow-400 text-black hover:bg-yellow-500 font-bold"
-                  >
-                    {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
-                  </Button>
-                  <Button
-                    onClick={toggleMute}
-                    size="sm"
-                    variant="ghost"
-                    className="text-white hover:bg-white/20"
-                  >
-                    {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-                  </Button>
-                </div>
-                <Button
-                  onClick={toggleFullscreen}
-                  size="sm"
-                  variant="ghost"
-                  className="text-white hover:bg-white/20"
-                >
-                  <Maximize className="w-5 h-5" />
-                </Button>
-              </div>
-            </div>
           </div>
         </div>
       </div>
