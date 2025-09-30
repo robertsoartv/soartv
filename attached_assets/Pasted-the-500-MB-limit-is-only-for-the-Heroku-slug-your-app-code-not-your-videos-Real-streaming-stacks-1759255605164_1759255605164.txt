@@ -1,0 +1,113 @@
+the 500 MB limit is only for the Heroku slug (your app code), not your videos. Real streaming stacks keep code on Heroku and videos on external storage/CDN (Firebase Storage/GCS is perfect).
+Here’s the clean, scalable setup for SoarTV + the exact pieces to add:
+What to keep doing
+Heroku: host the React app + API only.
+Firebase Storage (GCS): store all video files.
+DB (Firestore or your DB): store metadata + storage path/ID, not the file.
+Minimal, production-proof flow
+1) Keep big files out of Heroku
+Your .slugignore should exclude any media in the repo:
+attached_assets/
+*.mp4
+*.mov
+*.mkv
+*.zip
+2) Secure access (don’t expose raw public URLs)
+Two good options:
+Option A — Firebase Security Rules (simple, auth-gated)
+Make the files not public.
+Add rules so only signed-in users can read:
+// storage.rules (Firebase)
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Videos under /videos/*
+    match /videos/{file=**} {
+      allow read: if request.auth != null;   // require auth
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+  }
+}
+Your client plays the file via the generated download URL from the Firebase SDK (the SDK attaches a token). This is fine for many apps.
+Option B — Signed URLs via your API (stronger control)
+Issue short-lived signed URLs from your Heroku API. Users request /play/:id; server verifies auth and returns a 5–10 minute URL.
+Install on your API:
+npm i @google-cloud/storage
+server/signedUrl.ts (or inside your Express file):
+import { Storage } from "@google-cloud/storage";
+import type { Request, Response } from "express";
+
+// GCS is behind Firebase Storage; the bucket name is usually "<project-id>.appspot.com"
+const storage = new Storage(); // creds come from GOOGLE_APPLICATION_CREDENTIALS env var
+const bucketName = process.env.FIREBASE_STORAGE_BUCKET as string; // e.g. "soartv-7c924.appspot.com"
+
+export async function getSignedUrl(objectPath: string) {
+  const [url] = await storage
+    .bucket(bucketName)
+    .file(objectPath) // e.g. "videos/movie1/master.m3u8"
+    .getSignedUrl({
+      version: "v4",
+      action: "read",
+      expires: Date.now() + 10 * 60 * 1000 // 10 minutes
+    });
+  return url;
+}
+
+// Express route example
+export async function streamTokenRoute(req: Request, res: Response) {
+  // 1) verify user (e.g., Firebase ID token in Authorization header)
+  // 2) look up the objectPath for the movie in your DB
+  const objectPath = req.query.path as string; // e.g. "videos/movie1/master.m3u8"
+  if (!objectPath) return res.status(400).json({ error: "Missing path" });
+
+  try {
+    const url = await getSignedUrl(objectPath);
+    res.json({ url, expiresIn: 600 });
+  } catch (e) {
+    res.status(500).json({ error: "Failed to sign URL" });
+  }
+}
+For this, set a service account on Heroku: add GOOGLE_APPLICATION_CREDENTIALS pointing to a JSON file path you load at runtime, or (easier) base64-encode the JSON into an env var and instantiate Storage({credentials: ...}). I can show that snippet if you want the env-only method.
+3) Player in React (HLS ready, MP4 fallback)
+Prefer HLS (.m3u8) for adaptive streaming. Use hls.js:
+npm i hls.js
+// Player.tsx
+import { useEffect, useRef } from "react";
+import Hls from "hls.js";
+
+export default function Player({ src }: { src: string }) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !src) return;
+
+    if (Hls.isSupported() && src.endsWith(".m3u8")) {
+      const hls = new Hls();
+      hls.loadSource(src);
+      hls.attachMedia(video);
+      return () => hls.destroy();
+    } else {
+      // browsers with native HLS or MP4 fallback
+      video.src = src;
+    }
+  }, [src]);
+
+  return <video ref={videoRef} controls playsInline style={{ width: "100%" }} />;
+}
+Usage (with signed URL from API):
+const { url } = await fetch(`/api/stream-token?path=videos/movie1/master.m3u8`, {
+  headers: { Authorization: `Bearer ${firebaseIdToken}` }
+}).then(r => r.json());
+
+// <Player src={url} />
+4) (Optional but huge win) Transcode to HLS
+Instead of uploading raw MP4s, transcode to HLS (multiple bitrates) for smooth playback:
+Managed: Mux or Cloudflare Stream (easiest).
+DIY: ffmpeg → output master.m3u8 + segments to videos/<id>/... in your bucket, then serve via signed URLs + CDN.
+5) Put a CDN in front (later)
+Firebase Hosting/Google CDN or Cloudflare in front of your bucket speeds everything worldwide and lowers costs.
+TL;DR
+Yes, Heroku is fine for a streaming app, but never store/serve the movies from Heroku.
+Keep videos in Firebase Storage (GCS), serve via auth-gated URLs or signed URLs, and play with HLS in the browser.
+Your current direction (Firebase Storage + Heroku app + .slugignore) is the right architecture and scales to thousands of movies.
