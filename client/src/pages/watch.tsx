@@ -407,24 +407,34 @@ export default function Watch() {
           
           {/* Video Player */}
           <div className="relative bg-black rounded-xl overflow-hidden aspect-video shadow-2xl">
-            <video
-              ref={setVideoRef}
-              src={normalizeVideoURL(video.videoURL)}
-              poster={video.posterURL}
-              className="w-full h-full object-cover"
-              onPlay={() => {
-                setIsPlaying(true);
-                setShowPauseOverlay(false);
-              }}
-              onPause={() => {
-                setIsPlaying(false);
-                setShowPauseOverlay(true);
-              }}
-              onLoadedData={() => console.log('Video loaded')}
-              onError={(e) => console.error('Video error:', e)}
-              preload="metadata"
-              controls
-            />
+            {video.videoURL.includes('youtube.com') || video.videoURL.includes('youtu.be') ? (
+              <iframe
+                className="w-full h-full"
+                src={video.videoURL.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/')}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title={video.title}
+              />
+            ) : (
+              <video
+                ref={setVideoRef}
+                src={normalizeVideoURL(video.videoURL)}
+                poster={video.posterURL}
+                className="w-full h-full object-cover"
+                onPlay={() => {
+                  setIsPlaying(true);
+                  setShowPauseOverlay(false);
+                }}
+                onPause={() => {
+                  setIsPlaying(false);
+                  setShowPauseOverlay(true);
+                }}
+                onLoadedData={() => console.log('Video loaded')}
+                onError={(e) => console.error('Video error:', e)}
+                preload="metadata"
+                controls
+              />
+            )}
 
             {/* Shop the Scene Pause Overlay */}
             {showPauseOverlay && !isPlaying && (
