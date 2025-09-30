@@ -25,8 +25,14 @@ client/.eslintcache
 client/public
 # client/src - REMOVED: needed for Vite build process
 
-# Large assets - should be served from object storage, not bundled
-# attached_assets - COMMENTED OUT: needed for movie thumbnails on Heroku
+# Large video files - exclude from deployment, keep thumbnails
+attached_assets/*.mp4
+attached_assets/*.mov
+attached_assets/*.MP4
+attached_assets/*.MOV
+attached_assets/*.avi
+attached_assets/*.mkv
+attached_assets/*.webm
 public
 
 # Build artifacts and caches
