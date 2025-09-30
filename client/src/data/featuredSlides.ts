@@ -19,7 +19,7 @@ const ffPoster = "/attached_assets/Image 10-18-22 at 12.15 PM_1750689805162.jpg"
 const lolaVideo = "/attached_assets/My Name is Lola -a Maximus Wright film_1753201892406.mp4";
 const lolaTrailer = "/attached_assets/My Name is Lola Concept trailer  (We do not own the rights to the music)_1753204039587.mp4";
 const lolaPoster = "/attached_assets/95EEC8AE-407A-46F9-B80E-EEE859F4465F_1753202512174.JPEG";
-const freaksPoster = "/attached_assets/95EEC8AE-407A-46F9-B80E-EEE859F4465F_1753202512174.JPEG"; // Using existing image as fallback
+const freaksPoster = "/attached_assets/unnamed-4_1753457581972.png";
 
 // Enhanced movie data for Netflix-style pages
 export interface MovieData extends Slide {
@@ -73,7 +73,7 @@ export const featuredSlides: Slide[] = [
     id: 4,
     bgImage: "/attached_assets/613kJUhqglL._SY522_-2_1753207112697.jpg",
     posterImage: "/attached_assets/613kJUhqglL._SY522_-2_1753207112697.jpg",
-    trailer: "/attached_assets/Alphaville Trailer_1753467678844.mp4",
+    trailer: "/attached_assets/Soul Damage Trailer_1753207386360.mp4",
     title: 'Soul Damage',
     subtitle: '2024 • 2:15:30 • Drama, Thriller, Mystery',
     actionLabel: 'Watch Now FREE',

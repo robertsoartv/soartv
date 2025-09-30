@@ -13,6 +13,7 @@ import './HeroCarousel.css';
 export default function HeroCarousel() {
   const [current, setCurrent] = useState(0);
   const [showTrailer, setShowTrailer] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
   const trailerTimer = useRef<number>();
   const autoAdvanceTimer = useRef<number>();
   const slideContainer = useRef<HTMLDivElement>(null);
@@ -36,7 +37,10 @@ export default function HeroCarousel() {
     const slide = featuredSlides[current];
     if (!slide) return;
     
-    // For immediate trailer slides, show trailer immediately
+    // Reset video failed state on slide change
+    setVideoFailed(false);
+    
+    // For immediate trailer slides, show trailer immediately (only if video didn't fail)
     if (slide.title === 'My Name Is Lola' || slide.title === 'Soul Damage' || slide.title === 'From Darkness to Light!' || slide.title === '!FREAKS!' || slide.title === 'Alphaville') {
       setShowTrailer(true);
       return;
@@ -144,27 +148,20 @@ export default function HeroCarousel() {
         />
       )}
 
-      {/* trailer video */}
-      {showTrailer && (
+      {/* trailer video - fallback to poster if video fails */}
+      {showTrailer && !videoFailed && (
         <video
           className="hero-video"
           src={slide.trailer}
           autoPlay
           muted
           onError={(e) => {
-            console.error('🚨 Hero video error:', e);
-            console.error('📹 Failed video URL:', slide.trailer);
-            console.error('📍 Current environment:', import.meta.env.MODE);
-            console.error('🌐 Current hostname:', window.location.hostname);
-            console.error('🔗 Full video URL:', new URL(slide.trailer, window.location.origin).href);
-            if (e.target.error) {
-              console.error('💥 Video error details:', e.target.error.code, e.target.error.message);
-            }
+            console.warn('⚠️ Video unavailable (expected on Heroku), showing poster instead');
+            setVideoFailed(true);
+            setShowTrailer(false);
           }}
           onLoadStart={() => {
             console.log('📹 Video loading:', slide.trailer);
-            console.log('🌐 Environment:', import.meta.env.MODE);
-            console.log('🔗 Full URL:', new URL(slide.trailer, window.location.origin).href);
           }}
           onEnded={() => {
             nextSlide();
