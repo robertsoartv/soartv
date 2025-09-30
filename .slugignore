@@ -26,7 +26,7 @@ client/public
 # client/src - REMOVED: needed for Vite build process
 
 # Large assets - should be served from object storage, not bundled
-attached_assets
+# attached_assets - COMMENTED OUT: needed for movie thumbnails on Heroku
 public
 
 # Build artifacts and caches
